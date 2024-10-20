@@ -1,5 +1,20 @@
-// export class CreateProductDto {}
+import { IsNotEmpty, IsString, IsOptional, IsNumber, IsPositive } from 'class-validator';
 
-import { Product } from "@prisma/client";
+export class CreateProductDto {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 
-export type CreateProductDto = Omit<Product, 'id' | 'createdAd' | 'updateAt'>;
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  price: number;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
+}
