@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -16,6 +16,7 @@ export class ProductsService {
     } catch (error) {
       this.handlePrismaError(error, 'create');
     }
+    throw new InternalServerErrorException();
   }
 
   async findAll() {
