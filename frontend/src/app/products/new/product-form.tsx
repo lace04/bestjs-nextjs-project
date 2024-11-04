@@ -7,19 +7,33 @@ import { Button } from '@/components/ui/button';
 import { CardFooter } from '@/components/ui/card';
 
 import { useForm } from 'react-hook-form';
-import { createProduct } from '../products.api';
-import { useRouter } from 'next/navigation';
+import { createProduct, updateProduct } from '../products.api';
+import { useParams, useRouter } from 'next/navigation';
 
-function ProductForm() {
-  const { register, handleSubmit } = useForm();
+function ProductForm({ product }: any) {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      name: product?.name,
+      description: product?.description,
+      price: product?.price,
+      image: product?.image,
+    },
+  });
   const router = useRouter();
+  const params = useParams<{ id: string }>();
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-    await createProduct({
-      ...data,
-      price: parseFloat(data.price),
-    });
+    if (params?.id) {
+      await updateProduct(Number(params.id), {
+        ...data,
+        price: parseFloat(data.price),
+      });
+    } else {
+      await createProduct({
+        ...data,
+        price: parseFloat(data.price),
+      });
+    }
     router.push('/');
     router.refresh();
   });
@@ -31,6 +45,7 @@ function ProductForm() {
           <Label htmlFor='name'>Name</Label>
           <Input {...register('name')} placeholder='Name of product' />
         </div>
+
         <div className='flex flex-col space-y-1.5'>
           <Label htmlFor='description'>Description</Label>
           <Input {...register('description')} placeholder='Description' />
@@ -46,9 +61,15 @@ function ProductForm() {
           <Input {...register('image')} placeholder='Image URL' />
         </div>
 
-        <CardFooter className='flex justify-between'>
-          <Button variant='outline'>Cancel</Button>
-          <Button>Create</Button>
+        <CardFooter className='w-full p-0'>
+          <div className='flex w-full space-x-2'>
+            <Button variant='outline' className='flex-1'>
+              Cancel
+            </Button>
+            <Button className='flex-1'>
+              {params.id ? 'Update Product' : 'Create Product'}
+            </Button>
+          </div>
         </CardFooter>
       </div>
     </form>

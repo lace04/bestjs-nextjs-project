@@ -34,7 +34,10 @@ export function ProductCard({ product }: any) {
     router.refresh();
   }
   return (
-    <Card className='w-full max-w-sm overflow-hidden'>
+    <Card
+      className='w-full max-w-sm overflow-hidden'
+      onClick={() => router.push(`/products/${product.id}`)}
+    >
       <div className='relative'>
         <img
           alt={product.name}
@@ -65,8 +68,14 @@ export function ProductCard({ product }: any) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className='w-full'>
-          <ShoppingCart className='size-4' /> Add to Cart
+        <Button
+          className='w-full'
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(`/products/${product.id}/edit`);
+          }}
+        >
+          <ShoppingCart className='size-4' /> Edit
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
