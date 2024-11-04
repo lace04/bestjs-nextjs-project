@@ -9,13 +9,29 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { deleteProduct } from '@/app/products/products.api';
+import { useRouter } from 'next/navigation';
 
 export function ProductCard({ product }: any) {
-  function handleRemoveProduct(id: number) {
-    console.log('Removing product with id:', id);
+  const router = useRouter();
+
+  async function handleRemoveProduct(id: number) {
+    await deleteProduct(id);
+    router.refresh();
   }
   return (
     <Card className='w-full max-w-sm overflow-hidden'>
@@ -52,13 +68,30 @@ export function ProductCard({ product }: any) {
         <Button className='w-full'>
           <ShoppingCart className='size-4' /> Add to Cart
         </Button>
-        <Button
-          className='ml-5'
-          variant='outline'
-          onClick={() => handleRemoveProduct(product.id)}
-        >
-          <Trash2 className='size-4' />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button className='ml-5' variant='outline'>
+              <Trash2 className='size-4' />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta acción no se puede deshacer. Esto eliminará permanentemente
+                el producto de tu lista.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => handleRemoveProduct(product.id)}
+              >
+                Continuar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardFooter>
     </Card>
   );

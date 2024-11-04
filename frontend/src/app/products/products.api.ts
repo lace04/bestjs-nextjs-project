@@ -16,3 +16,15 @@ export async function getProducts() {
   });
   return await data.json();
 }
+
+export async function getProductById(id: number) {
+  const data = await fetch(`http://localhost:4000/api/products/${id}`);
+  return await data.json();
+}
+
+export async function deleteProduct(id: number) {
+  const res = await fetch(`http://localhost:4000/api/products/${id}`, {
+    method: 'DELETE',
+  });
+  return await res.json();
+}
